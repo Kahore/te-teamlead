@@ -3,6 +3,7 @@
     <div class="row">
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
         <img
+          v-if="filmDetails.poster_path"
           :src="'http://image.tmdb.org/t/p/w342/' + filmDetails.poster_path"
           alt="film poster"
           class="img-fluid"
@@ -24,10 +25,11 @@
           Revenue: {{ fixDetails(filmDetails.revenue, '$') }}
         </p>
         <p class="card-text">Vote: {{ filmDetails.vote_average }}</p>
-        <strong>Genre: </strong>
-        <span v-for="(genre, index) in filmDetails.genres" :key="index">
-          <a href="#">{{ genre.name + ' ' }}</a>
-        </span>
+        <film-details-list header="Genre" :items="filmDetails.genres" />
+        <film-details-list
+          header="Country"
+          :items="filmDetails.production_countries"
+        />
       </div>
     </div>
     <div class="row" v-if="this.filmDetails.trailers">
@@ -42,7 +44,11 @@
 import axios from 'axios';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { FilmDetailsModel, TrailerModel } from '@/store/models.ts';
-@Component
+@Component({
+  components: {
+    'film-details-list': () => import('@/components/FilmDetailsList.vue')
+  }
+})
 export default class FilmDetails extends Vue {
   public filmDetails: FilmDetailsModel = {};
   /**
@@ -75,7 +81,7 @@ export default class FilmDetails extends Vue {
     );
     return filmTrailerCollection.data.results;
   }
-  private getVideo() {
+  private getVideo(): string | undefined {
     if (this.filmDetails.trailers) {
       return this.filmDetails.trailers[0].key;
     }
