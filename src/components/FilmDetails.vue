@@ -1,6 +1,7 @@
 <template>
   <section>
-    <div class="row">
+    <app-spinner class="offset-md-6" v-if="isLoading" />
+    <div class="row" v-else>
       <div class="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-xs-12">
         <img
           v-if="filmDetails.poster_path"
@@ -34,7 +35,7 @@
     </div>
     <div class="row" v-if="this.filmDetails.trailers">
       <div class="col-md-7 col-sm-12 col-xl-12 mt-3">
-        <youtube :video-id="getVideo()" />
+        <youtube :video-id="getVideoKey()" />
       </div>
     </div>
   </section>
@@ -46,15 +47,20 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { FilmDetailsModel, TrailerModel } from '@/store/models.ts';
 @Component({
   components: {
-    'film-details-list': () => import('@/components/FilmDetailsList.vue')
+    'film-details-list': () => import('@/components/FilmDetailsList.vue'),
+    'app-spinner': () => import('@/components/layout/AppSpinner.vue')
   }
 })
 export default class FilmDetails extends Vue {
   public filmDetails: FilmDetailsModel = {};
+  public get isLoading(): boolean {
+    return this.$store.getters.IS_LOADING;
+  }
   /**
    * created
    */
   public async created() {
+    this.$store.commit('LOADING_EVENT');
     let filmId = this.$route.params.filmId;
 
     await this.getFilmDetails(filmId).then(resp => {
@@ -62,6 +68,7 @@ export default class FilmDetails extends Vue {
     });
     const trailers: TrailerModel[] = await this.getTrailer(filmId);
     this.filmDetails = { ...this.filmDetails, trailers };
+    this.$store.commit('LOADING_EVENT');
   }
   private fixDetails(value: number | null, end: string): string {
     if (value === 0 || value === null) {
@@ -71,17 +78,17 @@ export default class FilmDetails extends Vue {
   }
   private async getFilmDetails(filmId: string) {
     const filmList = await axios.get(
-      `https://api.themoviedb.org/3/movie/${filmId}?api_key=2f0075bbc35ce91def13d04dfe80888a&language=en-US`
+      `https://api.themoviedb.org/3/movie/${filmId}?api_key=${process.env.VUE_APP_API}&language=en-US`
     );
     return filmList.data;
   }
   private async getTrailer(filmId: string) {
     const filmTrailerCollection = await axios.get(
-      `https://api.themoviedb.org/3/movie/${filmId}/videos?api_key=2f0075bbc35ce91def13d04dfe80888a&language=en-US`
+      `https://api.themoviedb.org/3/movie/${filmId}/videos?api_key=${process.env.VUE_APP_API}&language=en-US`
     );
     return filmTrailerCollection.data.results;
   }
-  private getVideo(): string | undefined {
+  private getVideoKey(): string | undefined {
     if (this.filmDetails.trailers) {
       return this.filmDetails.trailers[0].key;
     }

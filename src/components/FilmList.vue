@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>{{ msg }}</h1>
-    <div v-for="gender in genders" :key="gender.id">
+    <app-spinner class="offset-md-6" v-if="isLoading" />
+    <div v-else v-for="gender in genders" :key="gender.id">
       <h3 :id="gender.name" class="text-center">{{ gender.name }}</h3>
       <div class="row">
         <film-list-item
@@ -22,7 +22,8 @@ import { Genre } from '@/store/models.ts';
 
 @Component({
   components: {
-    'film-list-item': () => import('@/components/FilmListItem.vue')
+    'film-list-item': () => import('@/components/FilmListItem.vue'),
+    'app-spinner': () => import('@/components/layout/AppSpinner.vue')
   }
 })
 export default class FilmList extends Vue {
@@ -31,6 +32,11 @@ export default class FilmList extends Vue {
     let gendres = this.$store.getters.GET_GENRES;
     return gendres;
   }
+
+  public get isLoading(): boolean {
+    return this.$store.getters.IS_LOADING;
+  }
+
   /**
    * created
    */
