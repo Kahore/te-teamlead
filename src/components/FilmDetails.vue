@@ -70,7 +70,7 @@ export default class FilmDetails extends Vue {
     this.filmDetails = { ...this.filmDetails, trailers };
     this.$store.commit('LOADING_EVENT');
   }
-  private fixDetails(value: number | null, end: string): string {
+  private fixDetails(value: number | null, end: '$' | 'min'): string {
     if (value === 0 || value === null) {
       return 'No data';
     }

@@ -22,7 +22,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { FilmDetailsModel } from '@/store/models.ts';
-import axios from 'axios';
 @Component
 export default class FilmListItem extends Vue {
   @Prop() public filmVal!: FilmDetailsModel;

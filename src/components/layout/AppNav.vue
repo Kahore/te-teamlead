@@ -7,10 +7,6 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-@Component({
-  components: {
-    'app-aside': () => import('@/components/layout/AppAside.vue')
-  }
-})
+@Component
 export default class AppNav extends Vue {}
 </script>

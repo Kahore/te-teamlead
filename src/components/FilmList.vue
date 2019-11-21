@@ -16,8 +16,7 @@
 </template>
 
 <script lang="ts">
-import axios from 'axios';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Genre } from '@/store/models.ts';
 
 @Component({
@@ -27,7 +26,6 @@ import { Genre } from '@/store/models.ts';
   }
 })
 export default class FilmList extends Vue {
-  @Prop() private msg!: string;
   get genders(): Genre[] {
     let gendres = this.$store.getters.GET_GENRES;
     return gendres;
