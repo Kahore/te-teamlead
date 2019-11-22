@@ -27,13 +27,15 @@ export default {
     async LOAD_GENRES({ commit }: any): Promise<any> {
       commit('LOADING_EVENT');
       const genders: Genre[] = await filmService.getGenres();
-      genders.forEach(async genre => {
+      genders.forEach(async(genre, index: number) => {
         if (genre.id) {
           await filmService.getFilms(genre.id).then(filmList => {
             Vue.set(genre, 'list', filmList);
             commit('LOAD_GENRES', genre);
           });
-          commit('LOADING_EVENT');
+          if (index === genders.length - 1) {
+            commit('LOADING_EVENT');
+          }
         }
       });
     }

@@ -48,7 +48,7 @@ describe('modules/film.js mutations', () => {
 });
 
 describe('modules/film.js actions', () => {
-  it('test LOAD_GENRES using mock mutation, but real store', async () => {
+  it('test LOAD_GENRES using mock mutation, but real store', async() => {
     let commit = jest.fn();
     await film.actions.LOAD_GENRES({ commit });
     expect(commit).toHaveBeenCalledWith('LOADING_EVENT');
